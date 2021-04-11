@@ -1,0 +1,33 @@
+Package: rawr2
+Type: Package
+Title: rawr2 miscellaneous
+Version: 0.0.1
+Authors@R: person("Robert", "Redd", email = "raredd01@gmail.com",
+  role = c("aut", "cre"))
+Author: Robert Redd
+Maintainer: Robert Redd <raredd01@gmail.com>
+Description: Miscellaneous functions.
+Depends: R (>= 3.5)
+Imports:
+    graphics,
+    methods,
+    rawr,
+    stats,
+    utils
+Suggests:
+    beepr,
+    desmon,
+    DT,
+    Hmisc,
+    htmlwidgets,
+    knitr,
+    markdown,
+    notifier,
+    plotr,
+    testthat
+License: GPL-2
+LazyData: yes
+URL: https://github.com/raredd/rawr2
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1
+Encoding: UTF-8
