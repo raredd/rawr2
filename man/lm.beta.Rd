@@ -36,5 +36,5 @@ lm.beta(lm(mpg ~ wt + disp + vs, data = mtcars), weights = 2)
 \url{http://onlinelibrary.wiley.com/doi/10.1002/sim.3107/abstract}
 }
 \seealso{
-\code{\link[QuantPsyc]{lm.beta}}
+\code{QuantPsyc::lm.beta}
 }

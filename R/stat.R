@@ -386,7 +386,7 @@ fakeglm <- function(formula, ..., family, data = NULL) {
   if (!missing(family)) {
     res$family <- if (inherits(family, 'family'))
       family
-    else if (class(family) == 'function')
+    else if (inherits(family, 'function'))
       family()
     else if (is.character(family))
       get(family)()
@@ -440,7 +440,7 @@ gcd <- function(x, y) {
 #' @param weights a vector of weights; see details
 #' 
 #' @seealso
-#' \code{\link[QuantPsyc]{lm.beta}}
+#' \code{QuantPsyc::lm.beta}
 #' 
 #' @references
 #' \url{http://onlinelibrary.wiley.com/doi/10.1002/sim.3107/abstract}
