@@ -1,5 +1,5 @@
 ### utilities
-# classMethods, getMethods, dapply, clist
+# classMethods, getMethods, dapply, clist, lextract
 # 
 # rawr_parse:
 # parse_yaml, parse_index, parse_news, parse_namespace
@@ -322,4 +322,73 @@ clist <- function (x, y, how = c('cbind', 'rbind', 'cbindx', 'rbindx')) {
         (bind(x[[ii]], y[[ii]]))(x[[ii]], y[[ii]])
   
   z
+}
+
+#' List extract
+#' 
+#' Extract a named object from a list without knowing its specific path in
+#' the list. Alternatively, return all list paths.
+#' 
+#' @param l a list with named element(s)
+#' @param pattern a pattern to match list element(s)
+#' @param path.only logical; if \code{TRUE}, matching object is not returned,
+#'   only named and unnamed paths
+#' @param verbose logical; if \code{TRUE}, named and unnamed paths to the
+#'   matching elements are printed
+#' @param all.paths logical; if \code{TRUE}, named and unnamed paths to all
+#'   list elements is returned
+#' 
+#' @examples 
+#' fit <- lm(mpg ~ wt, mtcars)
+#' fit$qr$qraux
+#' 
+#' lextract(fit, 'qraux')
+#' lextract(fit, all.paths = TRUE)
+#' 
+#' @export
+
+lextract <- function(l, pattern, path.only = FALSE, verbose = TRUE, all.paths = FALSE) {
+  unname2 <- function(l) {
+    ## unname all lists
+    ## str(unname2(lm(mpg ~ wt, mtcars)))
+    l <- unname(l)
+    if (inherits(l, 'list'))
+      for (ii in seq_along(l))
+        l[[ii]] <- Recall(l[[ii]])
+    l
+  }
+  
+  lpath <- function(l) {
+    ## return all list elements with path as character string
+    ## l <- lm(mpg ~ wt, mtcars); lpath(l)
+    ln <- deparse(substitute(l))
+    rl <- rapply(l, unclass, how = 'list')
+    ll <- list(named = rl, unnamed = unname2(rl))
+    
+    if (identical(ll$named, ll$unnamed))
+      warning('list does not have any named elements', call. = FALSE)
+    
+    lapply(ll, function(x) {
+      x <- capture.output(x)
+      paste0(ln, x[grep('^\\$|^[[]{2,}', x)])
+    })
+  }
+  
+  ln <- eval(substitute(lpath(l), list(l = match.call()$l)))
+  if (all.paths)
+    return(ln)
+  
+  idx <- grep(pattern, ln$named)
+  res <- list(named = ln$named[idx], unnamed = ln$unnamed[idx])
+  
+  if (verbose) {
+    cat(res$named, sep = '\n')
+    cat('\n')
+    cat(res$unnamed, sep = '\n')
+    cat('\n')
+  }
+  
+  if (path.only)
+    res else setNames(lapply(idx, function(x)
+      eval(parse(text = ln$named[x]))), ln$named[idx])
 }
